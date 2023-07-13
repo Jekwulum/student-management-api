@@ -1,3 +1,5 @@
+import random
+import datetime
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -33,7 +35,10 @@ class StudentListView(APIView):
                               "data": serializer.data})
 
     def post(self, request: Request):
-        serializer = StudentSerializer(data=request.data)
+        data = request.data
+        number = random.randint(0, 999999)
+        data['registrationNo'] = f"{datetime.date.today().year}-STU-{number:06}"
+        serializer = StudentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED,
@@ -62,7 +67,7 @@ class StudentDetailView(APIView):
                               "data": serializer.data})
 
     def patch(self, request: Request, pk=None):
-        student = self.get_object(studentId=pk)
+        student = self.get_object(pk)
         if student is None:
             return Response(status=status.HTTP_404_NOT_FOUND,
                             data={"message": "student's record not found", "status": "FAILED"})
@@ -70,14 +75,14 @@ class StudentDetailView(APIView):
         serializer = StudentSerializer(instance=student, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_200_OKdata,
+            return Response(status=status.HTTP_200_OK,
                             data={"message": "student's record updated",
                                   "data": serializer.data,
                                   "status": "SUCCESS"})
             return Response(data={"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request: Request, pk=None):
-        student = self.get_object(studentId=pk)
+        student = self.get_object(pk)
         if student is None:
             return Response(status=status.HTTP_404_NOT_FOUND,
                             data={"message": "student's record not found", "status": "FAILED"})
