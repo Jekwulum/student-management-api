@@ -13,6 +13,12 @@ from .serializers import StudentSerializer
 
 @api_view(['GET'])
 def student_search(request: Request, pk=None):
+    """
+    :param request:
+    :param pk: pk could be the email or registrationNo of the record being searched for
+    :return:
+    This endpoint returns a student's record by searching by either email or registrationNo
+    """
     try:
         student = Student.objects.get(Q(email=pk) | Q(registrationNo=pk))
         serializer = StudentSerializer(student)
