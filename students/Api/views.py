@@ -42,8 +42,8 @@ class StudentListView(APIView):
 
     def post(self, request: Request):
         data = request.data
-        number = random.randint(0, 999999)
-        data['registrationNo'] = f"{datetime.date.today().year}-STU-{number:06}"
+        number = random.randint(0, 9999)
+        data['registrationNo'] = f"{datetime.date.today().year}-STU-{number:04}"
         serializer = StudentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
