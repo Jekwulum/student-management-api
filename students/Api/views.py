@@ -155,5 +155,7 @@ class StudentDetailView(APIView):
                             data={"message": "student's record not found", "status": "FAILED"})
 
         student.delete()
+        user = User.objects.get(user_id=student.user_id)
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT,
                         data={"message": "student's record deleted", "status": "SUCCESS"})
