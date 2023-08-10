@@ -20,7 +20,7 @@ class UserListAV(APIView):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
         return Response(
-            data={"message": "students records successfully fetched", "data": serializer.data, "status": "SUCCESS"},
+            data={"message": "users' records successfully fetched", "data": serializer.data, "status": "SUCCESS"},
             status=status.HTTP_200_OK)
 
     def post(self, request: Request):

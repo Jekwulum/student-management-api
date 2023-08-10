@@ -14,7 +14,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from students.models import Student
 from .serializers import StudentSerializer
 from users.Api.serializers import CustomUserSerializer
-from users.permissions import IsStaffPermission
+from users.permissions import IsStaffPermission, IsAdminPermission
 
 from django.contrib.auth import get_user_model
 
@@ -42,8 +42,8 @@ def student_search(request: Request, pk=None):
 
 
 class StudentListView(APIView):
-    authentication_classes = [JWTAuthentication, IsStaffPermission]
-    permission_classes = [IsAuthenticated, ]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsStaffPermission]
 
     def get(self, request: Request):
         students = Student.objects.all()
@@ -72,20 +72,21 @@ class StudentListView(APIView):
                     user = custom_user_serializer.save()
                     number = random.randint(0, 9999)
 
-                    student_data["user"] = user.user_id
-                    student_data["registration_num"] = f"{datetime.date.today().year}-STU-{number:04}"
-                    student_serializer = StudentSerializer(data=student_data)
-                    if student_serializer.is_valid(raise_exception=True):
-                        student_serializer.save()
-                        return Response({"message": "Student created successfully", "status": "SUCCESS"},
-                                        status=status.HTTP_201_CREATED)
+                    student = Student.objects.create(
+                        user=user,
+                        registration_num=f"{datetime.date.today().year}-STU-{number:04}",
+                        course=student_data["course"]
+                    )
+                    student.save()
+                    return Response({"message": "Student created successfully", "status": "SUCCESS"},
+                                    status=status.HTTP_201_CREATED)
             except (IntegrityError, ValidationError) as e:
                 if user:
                     user.delete()
                 return Response({"message": 'Invalid data provided for student creation.', "status": "FAILED"},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
-                print(e)
+                print("error ", e)
                 if user:
                     user.delete()
                 return Response({"message": 'An error occurred during student creation.', "status": "FAILED"},
@@ -97,7 +98,20 @@ class StudentListView(APIView):
 
 class StudentDetailView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStaffPermission]
+
+    # def delete_permissions(self):
+    #     # Customize permissions for GET method
+    #     if self.request.method == 'GET':
+    #         return [IsStaffPermission()]
+    #     # Default permissions for other methods
+    #     return super().get_permissions()
+    #
+    # def delete_permissions(self):
+    #     if self.request.method == 'DELETE':
+    #         return [IsAdminPermission()]
+    #     # Default permissions for other methods
+    #     return super().delete_permissions()
 
     def get_object(self, pk=None):
         print(pk)
