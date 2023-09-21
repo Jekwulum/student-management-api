@@ -113,3 +113,19 @@ class LoginAPIView(TokenObtainPairView):
 
         return Response({"status": "FAILED", "message": serializer.errors},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class LogoutAPIView(APIView):
+    def post(self, request: Request):
+        refresh_token = request.data.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"status": "FAILED", "message": "Refresh token is required."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            TokenObtainPairView().token_blacklist[refresh_token]
+            return Response({"status": "SUCCESS", "message": "Logged out successfully."})
+        except KeyError:
+            return Response({"status": "FAILED", "message": "Invalid refresh token."},
+                            status=status.HTTP_400_BAD_REQUEST)
