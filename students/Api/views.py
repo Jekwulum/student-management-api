@@ -178,6 +178,10 @@ class StudentPaginationView(APIView):
         return Response(status=status.HTTP_200_OK,
                         data={"message": "Students records retrieved successfully",
                               "status": "SUCCESS",
-                              "data": serializer.data
-                              },
+                              "data": serializer.data,
+                              "pagination": {
+                                  # "total_pages": paginator.cou,
+                                  "total_items": paginator.count
+                              }
+                              }
                         )

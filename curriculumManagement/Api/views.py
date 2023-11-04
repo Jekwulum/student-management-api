@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from rest_framework import status
 from curriculumManagement.models import Class, Subject
 from .serializers import ClassSerializer, SubjectSerializer
+from django.db.models import Q
 
 
 class ClassListView(APIView):
@@ -25,7 +26,49 @@ class ClassListView(APIView):
 
 
 class ClassDetailVIew(APIView):
-    pass
+    def get_object(self, pk=None):
+        try:
+            student_class = Class.objects.get(class_id=pk)
+            return student_class
+        except Class.DoesNotExist:
+            return None
+
+    def get(self, request: Request, pk=None):
+        student_class = self.get_object(pk)
+        if student_class is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Class record not found", "status": "FAILED"})
+
+        serializer = ClassSerializer(student_class)
+        return Response(status=status.HTTP_200_OK,
+                        data={"message": "Class' record retrieved successfully",
+                              "status": "SUCCESS",
+                              "data": serializer.data})
+
+    def patch(self, request: Request, pk=None):
+        student_class = self.get_object(pk)
+        if student_class is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Class record not found", "status": "FAILED"})
+        serializer = ClassSerializer(
+            instance=student_class, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK,
+                            data={"message": "Class' record updated",
+                                  "data": serializer.data,
+                                  "status": "SUCCESS"})
+        return Response(data={"message": serializer.errors, "status": "FAILED"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, pk=None):
+        student_class = self.get_object(pk)
+        if student_class is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Class record not found", "status": "FAILED"})
+
+        student_class.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT,
+                        data={"message": "Subject's record deleted", "status": "SUCCESS"})
 
 
 class SubjectListView(APIView):
@@ -47,4 +90,48 @@ class SubjectListView(APIView):
 
 
 class SubjectDetailView(APIView):
-    pass
+    def get_object(self, pk=None):
+        try:
+            subject = Subject.objects.get(code=pk)
+            subject = Subject.objects.get(Q(code=pk) | Q(subject_id=pk))
+            return subject
+        except Subject.DoesNotExist:
+            return None
+
+    def get(self, request: Request, pk=None):
+        subject = self.get_object(pk)
+        if subject is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Subject's record not found", "status": "FAILED"})
+
+        serializer = SubjectSerializer(subject)
+        return Response(status=status.HTTP_200_OK,
+                        data={"message": "Subject's record retrieved successfully",
+                              "status": "SUCCESS",
+                              "data": serializer.data})
+
+    def patch(self, request: Request, pk=None):
+        subject = self.get_object(pk)
+        if subject is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Subject's record not found", "status": "FAILED"})
+        serializer = SubjectSerializer(
+            instance=subject, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK,
+                            data={"message": "Subject's record updated",
+                                  "data": serializer.data,
+                                  "status": "SUCCESS"})
+        return Response(data={"message": serializer.errors, "status": "FAILED"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request, pk=None):
+        subject = self.get_object(pk)
+        if subject is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={"message": "Subject record not found", "status": "FAILED"})
+
+        subject.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT,
+                        data={"message": "Subject's record deleted", "status": "SUCCESS"})
+
