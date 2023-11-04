@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from curriculumManagement.models import Class, Subject
+from curriculumManagement.models import Class, Subject, Result
 
 
 class ClassSerializer(ModelSerializer):
@@ -11,4 +11,10 @@ class ClassSerializer(ModelSerializer):
 class SubjectSerializer(ModelSerializer):
     class Meta:
         model = Subject
+        fields = '__all__'
+
+
+class ResultSerializer(ModelSerializer):
+    class Meta:
+        model = Result
         fields = '__all__'

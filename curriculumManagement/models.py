@@ -29,7 +29,7 @@ class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.DO_NOTHING)
     subject = models.ForeignKey(Subject, on_delete=models.DO_NOTHING)
     teacher = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING)
-    score = models.DecimalField(max_digits=5, decimal_places=2)  # You can adjust max_digits and decimal_places as needed.
+    score = models.DecimalField(max_digits=5, decimal_places=2)
     date = models.DateField()
 
     def __str__(self):
