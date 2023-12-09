@@ -44,8 +44,7 @@ class Result(models.Model):
 
 
 class Attendance(models.Model):
-    attendance_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
+    
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     class_attended = models.ForeignKey(Class, on_delete=models.CASCADE)
     date = models.DateField()

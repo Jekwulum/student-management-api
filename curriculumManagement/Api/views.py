@@ -10,6 +10,10 @@ from django.db.models import Q
 
 class ClassListView(APIView):
     def get(self, request: Request):
+        # class_ids = Class.objects.values_list('class_id', flat=True)
+        # newList = [str(id) for id in list(class_ids)]
+        # print(newList)
+
         classes = Class.objects.all()
         serializer = ClassSerializer(classes, many=True)
         return Response(status=status.HTTP_200_OK,
@@ -74,6 +78,10 @@ class ClassDetailVIew(APIView):
 
 class SubjectListView(APIView):
     def get(self, request: Request):
+
+        subject_ids = Subject.objects.values_list('subject_id', flat=True)
+        newList = [str(id) for id in list(subject_ids)]
+        print(newList)
 
         subjects = Subject.objects.all()
         serializer = SubjectSerializer(subjects, many=True)

@@ -17,6 +17,10 @@ class UserListAV(APIView):
     permission_classes = [IsAuthenticated, IsStaffPermission]
 
     def get(self, request: Request):
+        # user_ids = CustomUser.objects.filter(is_superuser=False, is_staff=True).values_list('user_id', flat=True)
+        # newList = [str(id) for id in list(user_ids)]
+        # print(newList)
+
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
         return Response(

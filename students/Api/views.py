@@ -48,14 +48,9 @@ class StudentListView(APIView):
 
     def get(self, request: Request):
 
-        # # Retrieve all student IDs from the Student table
+        # Retrieve all student IDs from the Student table
         # student_ids = Student.objects.values_list('student_id', flat=True)
-
-        # # Convert the QuerySet of IDs to a Python list
-        # student_ids_list = list(student_ids)
-        # newList = [str(id) for id in student_ids_list]
-
-        # # Print the list of student IDs
+        # newList = [str(id) for id in list(student_ids)]
         # print(newList)
 
 

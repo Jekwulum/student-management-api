@@ -22,7 +22,9 @@ class TeacherListView(APIView):
 
     def get(self, request: Request):
         teachers = Teacher.objects.all()
-        print(teachers)
+        teacher_ids = Teacher.objects.values_list('teacher_id', flat=True)
+        newList = [str(id) for id in list(teacher_ids)]
+        print(newList)
         serializer = TeacherSerializer(teachers, many=True)
         return Response(status=status.HTTP_200_OK,
                         data={"message": "Teachers records retrieved successfully",

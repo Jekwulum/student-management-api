@@ -1,6 +1,10 @@
 import requests
+import os
 from faker import Faker
 from faker.providers import BaseProvider
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class SubjectProvider(BaseProvider):
@@ -14,7 +18,8 @@ class SubjectProvider(BaseProvider):
 fake = Faker()
 fake.add_provider(SubjectProvider)
 
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMTE1MjY5LCJpYXQiOjE3MDIxMDgwNjksImp0aSI6IjM5ZjkyYjQzMTc2NjQ3ZTE4YjBhZjQxNTlkOTkwODc1IiwidXNlcl9pZCI6IjAyNTg5YTZiLWVkZGEtNDMwNi1hOWZiLTNiMDZmMDY4YzZjNSJ9.FuSDFpmwBzLR53DnYgnY2bnTgsdaUnj10hA07nm8tOA"
+# TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMTE1MjY5LCJpYXQiOjE3MDIxMDgwNjksImp0aSI6IjM5ZjkyYjQzMTc2NjQ3ZTE4YjBhZjQxNTlkOTkwODc1IiwidXNlcl9pZCI6IjAyNTg5YTZiLWVkZGEtNDMwNi1hOWZiLTNiMDZmMDY4YzZjNSJ9.FuSDFpmwBzLR53DnYgnY2bnTgsdaUnj10hA07nm8tOA"
+TOKEN = os.environ.get('TOKEN')
 api_url = "http://127.0.0.1:8000/api/users/"
 authorization = f"Bearer {TOKEN}"
 
@@ -41,4 +46,5 @@ for _ in range(num_fake_names):
         print(f"Inserted: {first_name} {last_name}")
     else:
         print(f"Failed to insert: {first_name} {last_name}")
+        print(response.json)
 print("Done populating the database with fake names.")
