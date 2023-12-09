@@ -37,7 +37,7 @@ class UserListAV(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(data={"message": "User added successfully", "data": serializer.data},
-                            status=status.HTTP_200_OK)
+                            status=status.HTTP_201_CREATED)
 
         else:
             return Response(data={'message': serializer.errors, 'status': 'FAILED'},

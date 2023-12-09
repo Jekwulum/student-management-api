@@ -11,3 +11,8 @@ class IsStaffPermission(BasePermission):
 class IsAdminPermission(BasePermission):
     def has_permission(self, request: Request, view):
         return request.user.is_superuser
+    
+
+# class CanPerformUpdate(BasePermission):
+#     def has_permission(self, request: Request, view):
+#         return request.user.is_superuser

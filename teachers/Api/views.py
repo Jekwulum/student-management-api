@@ -1,10 +1,15 @@
 # views.py
 from rest_framework.views import APIView
-from teachers.models import Teacher
-from .serializers import TeacherSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from teachers.models import Teacher
+from teachers.Api.serializers import TeacherSerializer
+from users.permissions import IsStaffPermission, IsAdminPermission
+from users.Api.serializers import CustomUserSerializer
 
 from django.contrib.auth import get_user_model
 
@@ -12,8 +17,12 @@ User = get_user_model()
 
 
 class TeacherListView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsStaffPermission]
+
     def get(self, request: Request):
         teachers = Teacher.objects.all()
+        print(teachers)
         serializer = TeacherSerializer(teachers, many=True)
         return Response(status=status.HTTP_200_OK,
                         data={"message": "Teachers records retrieved successfully",
@@ -22,10 +31,13 @@ class TeacherListView(APIView):
 
     def post(self, request: Request):
         serializer = TeacherSerializer(data=request.data)
-        return Response(status=status.HTTP_201_CREATED,
-                        data={"message": "Teachers record created successfully",
-                              "status": "SUCCESS",
-                              "data": serializer.data})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data={"message": "Teacher record created successfully", "status": "SUCCESS", "data": serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(data={"message": serializer.errors, "status": "FAILED"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TeacherDetailView(APIView):
