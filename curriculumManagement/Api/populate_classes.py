@@ -1,12 +1,17 @@
 import requests
+import os
+from dotenv import load_dotenv
 from faker import Faker
 from faker.providers import BaseProvider
 from pprint import pprint
 import random
 
+load_dotenv()
+
 fake = Faker()
 
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMTE3Mzg1LCJpYXQiOjE3MDIxMTAxODUsImp0aSI6IjcxZTU2Yjc0ZGJhMTRlN2FiOGJhMzU0NjQxNzUxZmY1IiwidXNlcl9pZCI6IjAyNTg5YTZiLWVkZGEtNDMwNi1hOWZiLTNiMDZmMDY4YzZjNSJ9.LKYS648STNoUou5HXvC5N0uOqmnb1yiFxgiJ6-rdcdk"
+# TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMTE3Mzg1LCJpYXQiOjE3MDIxMTAxODUsImp0aSI6IjcxZTU2Yjc0ZGJhMTRlN2FiOGJhMzU0NjQxNzUxZmY1IiwidXNlcl9pZCI6IjAyNTg5YTZiLWVkZGEtNDMwNi1hOWZiLTNiMDZmMDY4YzZjNSJ9.LKYS648STNoUou5HXvC5N0uOqmnb1yiFxgiJ6-rdcdk"
+TOKEN = os.environ.get('TOKEN')
 api_url = "http://127.0.0.1:8000/api/classes/"
 authorization = f"Bearer {TOKEN}"
 

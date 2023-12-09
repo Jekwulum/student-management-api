@@ -1,9 +1,10 @@
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
-from curriculumManagement.models import Class, Subject, Result
-from .serializers import ClassSerializer, SubjectSerializer, ResultSerializer
+from curriculumManagement.models import Class, Subject, Result, Attendance
+from .serializers import ClassSerializer, SubjectSerializer, ResultSerializer, AttendanceSerializer
 from django.db.models import Q
 
 
@@ -73,6 +74,7 @@ class ClassDetailVIew(APIView):
 
 class SubjectListView(APIView):
     def get(self, request: Request):
+
         subjects = Subject.objects.all()
         serializer = SubjectSerializer(subjects, many=True)
         return Response(status=status.HTTP_200_OK,
@@ -197,3 +199,13 @@ class ResultDetailView(APIView):
         result.delete()
         return Response(status=status.HTTP_204_NO_CONTENT,
                         data={"message": "Result record deleted", "status": "SUCCESS"})
+
+
+class AttendanceListCreateView(generics.ListCreateAPIView):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+
+class AttendanceRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
