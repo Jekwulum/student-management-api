@@ -23,26 +23,27 @@ classes = ['049943eb-63ee-412d-ac87-c97677b84be3', '2648dc33-c2c8-4dee-8146-2f01
 
 random_date = fake.date_this_year()
 
-for idx in range(0, len(students)):
-    date = str(random_date)
+for _ in range(40):
+    for idx in range(0, len(students)):
+        date = str(random_date)
 
-    payload = {
-        "student": students[idx],
-        "class_attended": random.choice(classes),
-        "date": date,
-        "is_present": random.choice([True, False])
-    }
-    print(payload)
+        payload = {
+            "student": students[idx],
+            "class_attended": random.choice(classes),
+            "date": date,
+            "is_present": random.choice([True, False])
+        }
+        print(payload)
 
-    headers = {"Authorization": authorization,
-               "Content-Type": "application/json"}
+        headers = {"Authorization": authorization,
+                   "Content-Type": "application/json"}
 
-    response = requests.post(api_url, json=payload, headers=headers)
+        response = requests.post(api_url, json=payload, headers=headers)
 
-    print(response.json())
+        print(response.json())
 
-    if response.status_code == 201 or response.status_code == 200:
-        print(f"Inserted: {date}")
-    else:
-        print(f"Failed to insert: {date}")
+        if response.status_code == 201 or response.status_code == 200:
+            print(f"Inserted: {date}")
+        else:
+            print(f"Failed to insert: {date}")
 print("Done populating the database with fake classes.")

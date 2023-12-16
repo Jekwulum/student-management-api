@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.decorators import api_view
 from rest_framework import status
 from curriculumManagement.models import Class, Subject, Result, Attendance
 from .serializers import ClassSerializer, SubjectSerializer, ResultSerializer, AttendanceSerializer
@@ -217,3 +218,19 @@ class AttendanceListCreateView(generics.ListCreateAPIView):
 class AttendanceRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
+
+
+@api_view(['GET'])
+def get_student_attendance(request: Request, pk=None):
+    try:
+        attendances = Attendance.objects.filter(student=pk)
+        serializer = AttendanceSerializer(attendances, many=True)
+        return Response(status=status.HTTP_200_OK,
+                        data={"message": "Students aatendance records retrieved successfully",
+                              "status": "SUCCESS",
+                              "data": serializer.data})
+
+    except Attendance.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND,
+                        data={"message": "student sttendance record not found", "status": "FAILED"})
+
